@@ -1,0 +1,2181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danny & elafi</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%200%2032%2032%22><text y=%2226%22 font-size=%2224%22>💖</text></svg>">
+
+  <!-- Google Fonts: Cairo, Outfit, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            charcoal: {
+              950: '#070709',
+              900: '#0d0d0f',
+              850: '#121216',
+              800: '#17171d',
+              700: '#21212a',
+              600: '#2d2d38',
+            },
+            hotPink: {
+              400: '#ff669d',
+              500: '#ff4d8d',
+              600: '#e6005c',
+              700: '#b30047',
+              900: '#4d001f',
+            },
+            cyberRed: '#ff2a5f',
+            cyberGold: '#f59e0b',
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            outfit: ['Outfit', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          boxShadow: {
+            'pink-glow': '0 0 25px rgba(255, 77, 141, 0.35)',
+            'pink-glow-lg': '0 0 45px rgba(255, 77, 141, 0.55)',
+            'pink-glow-sm': '0 0 12px rgba(255, 77, 141, 0.25)',
+            'cyan-glow': '0 0 25px rgba(56, 189, 248, 0.35)',
+            'gold-glow': '0 0 30px rgba(245, 158, 11, 0.4)',
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'float': 'float 3s ease-in-out infinite',
+            'wiggle': 'wiggle 0.3s ease-in-out infinite',
+            'twinkle': 'twinkle 2s ease-in-out infinite',
+            'shimmer': 'shimmer 2.5s linear infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            wiggle: {
+              '0%, 100%': { transform: 'rotate(-3deg)' },
+              '50%': { transform: 'rotate(3deg)' },
+            },
+            twinkle: {
+              '0%, 100%': { opacity: 0.2, transform: 'scale(0.8)' },
+              '50%': { opacity: 1, transform: 'scale(1.2)' },
+            },
+            shimmer: {
+              '0%': { backgroundPosition: '-200% 0' },
+              '100%': { backgroundPosition: '200% 0' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- HTML2Canvas CDN (For High-Res Certificate Export) -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <!-- External Memories Data (146 sorted items) -->
+  <script src="assets/memories_data.js" onerror="if(!window.MEMORIES_DATA){var s=document.createElement('script');s.src='memories_data.js';document.head.appendChild(s);}"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+
+    body {
+      background-color: #070709;
+      color: #f3f4f6;
+      font-family: 'Cairo', 'Outfit', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Cyberpunk Grid Background Overlay */
+    .cyber-grid {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(255, 77, 141, 0.04) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 77, 141, 0.04) 1px, transparent 1px);
+    }
+
+    /* Static Twinkling Stars in Place (No moving/flying elements) */
+    .bg-star {
+      position: absolute;
+      color: #f59e0b;
+      pointer-events: none;
+      animation: twinkle ease-in-out infinite alternate;
+      filter: drop-shadow(0 0 6px rgba(245, 158, 11, 0.8));
+    }
+
+    /* =========================================================================
+       3D REALISTIC BOOK / MAGAZINE FLIPBOOK STYLES
+       ========================================================================= */
+    .magazine-spread-container {
+      perspective: 2000px;
+    }
+
+    .magazine-book {
+      position: relative;
+      transform-style: preserve-3d;
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 77, 141, 0.15);
+      border-radius: 28px;
+    }
+
+    .book-spine-crease {
+      box-shadow: inset 18px 0 25px -10px rgba(0, 0, 0, 0.9), inset -18px 0 25px -10px rgba(0, 0, 0, 0.9);
+    }
+
+    /* Page Turn Interactive Zones & Animations */
+    .book-page-zone {
+      position: relative;
+      transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.45s ease;
+      cursor: pointer;
+    }
+
+    .book-page-zone:hover {
+      box-shadow: 0 10px 30px rgba(255, 77, 141, 0.15);
+    }
+
+    /* Page Flip Turn Animations */
+    @keyframes flipLeftForward {
+      0% { transform: rotateY(0deg); opacity: 1; filter: brightness(1); }
+      50% { transform: rotateY(-70deg) skewY(-2deg); opacity: 0.7; filter: brightness(0.7); }
+      100% { transform: rotateY(0deg); opacity: 1; filter: brightness(1); }
+    }
+
+    @keyframes flipRightBackward {
+      0% { transform: rotateY(0deg); opacity: 1; filter: brightness(1); }
+      50% { transform: rotateY(70deg) skewY(2deg); opacity: 0.7; filter: brightness(0.7); }
+      100% { transform: rotateY(0deg); opacity: 1; filter: brightness(1); }
+    }
+
+    .anim-flip-forward {
+      animation: flipLeftForward 0.5s ease-in-out;
+      transform-origin: right center;
+    }
+
+    .anim-flip-backward {
+      animation: flipRightBackward 0.5s ease-in-out;
+      transform-origin: left center;
+    }
+
+    /* 3D Interactive Gift Box */
+    .gift-box-wrapper {
+      perspective: 1000px;
+    }
+
+    .gift-box-lid {
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease;
+      transform-origin: top center;
+    }
+
+    .gift-box-opened .gift-box-lid {
+      transform: translateY(-90px) rotate(-25deg) scale(0.9);
+      opacity: 0.2;
+    }
+
+    .gift-box-opened .gift-box-burst {
+      opacity: 1;
+      transform: scale(1.4);
+    }
+
+    /* Pokemon Holographic Rainbow Glare Layer */
+    .holo-overlay {
+      background: linear-gradient(
+        115deg,
+        transparent 20%,
+        rgba(255, 0, 128, 0.3) 35%,
+        rgba(0, 255, 255, 0.3) 50%,
+        rgba(255, 215, 0, 0.3) 65%,
+        transparent 80%
+      );
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #070709; }
+    ::-webkit-scrollbar-thumb { background: #21212a; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #ff4d8d; }
+
+    /* Print Styles for Certificate (Stage 6) */
+    @media print {
+      body * { visibility: hidden !important; }
+      #certificate-printable, #certificate-printable * { visibility: visible !important; }
+      #certificate-printable {
+        position: fixed !important;
+        left: 0 !important; top: 0 !important;
+        width: 100vw !important; height: 100vh !important;
+        background: #0d0d0f !important;
+        color: white !important;
+      }
+    }
+  </style>
+</head>
+<body class="cyber-grid relative min-h-screen selection:bg-hotPink-500 selection:text-white">
+
+  <!-- =========================================================================
+       ✨ 1. STATIC TWINKLING BACKGROUND STARS (No moving/flying elements)
+       ========================================================================= -->
+  <div id="bg-decorations" class="fixed inset-0 pointer-events-none overflow-hidden z-0"></div>
+
+  <!-- INTERACTIVE MOUSE PARTICLE CANVAS (Restored Glowing Stars & Sparkles) -->
+  <canvas id="cursor-canvas" class="fixed inset-0 pointer-events-none z-10"></canvas>
+
+  <!-- =========================================================================
+       💖 2. FLOATING PERMANENT "ILY DANNY" BUTTON
+       ========================================================================= -->
+  <button id="ily-top-btn" 
+    class="fixed top-4 right-4 z-[9999] px-4 py-2.5 rounded-full bg-gradient-to-r from-hotPink-600 to-hotPink-500 hover:from-hotPink-500 hover:to-hotPink-400 text-white font-black text-xs sm:text-sm shadow-pink-glow hover:shadow-pink-glow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer group border border-hotPink-400/40 select-none">
+    <span class="animate-pulse text-base sm:text-lg">💖</span>
+    <span class="font-outfit uppercase tracking-wider font-extrabold">ILY DANNY</span>
+    <span id="ily-counter-badge" class="px-2 py-0.5 rounded-full bg-charcoal-900/60 text-[10px] font-mono font-bold text-hotPink-300 border border-hotPink-400/30">0</span>
+  </button>
+
+  <!-- FLOATING ILY TOAST NOTIFICATION CONTAINER -->
+  <div id="ily-toast-container" class="fixed top-20 right-4 z-[9998] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- TOP MINIMAL NAVIGATION -->
+  <header class="w-full pt-6 pb-2 px-6 flex justify-start items-center max-w-6xl mx-auto z-40 relative">
+    <div class="flex items-center gap-3 bg-charcoal-900/80 backdrop-blur-md border border-charcoal-700/60 rounded-2xl px-4 py-2 text-xs font-mono text-gray-400">
+      <span class="flex items-center gap-1.5 text-hotPink-400 font-bold">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>elafi & Danny</span>
+      </span>
+      <span class="text-charcoal-600">|</span>
+      <span id="active-stage-indicator" class="text-hotPink-400 font-semibold">المرحلة: 1 / 6</span>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       MAIN CONTENT CONTAINER
+       ========================================================================= -->
+  <main class="max-w-5xl mx-auto px-4 py-8 space-y-28 relative z-20">
+
+    <!-- =======================================================================
+         🕹️ STAGE 1: OPENING SCREEN - "The Runaway 'NO' Button"
+         ======================================================================= -->
+    <section id="stage-1" class="min-h-[75vh] flex flex-col items-center justify-center text-center relative py-12">
+      <!-- Decorative Backdrop Glow -->
+      <div class="absolute w-72 h-72 sm:w-96 sm:h-96 bg-hotPink-600/10 rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-charcoal-800/80 border border-hotPink-500/30 text-hotPink-400 text-xs font-mono mb-6 shadow-pink-glow-sm">
+        <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
+        <span>سؤال اجباري</span>
+      </div>
+
+      <!-- Main Question Card (Crown removed) -->
+      <div class="w-full max-w-xl bg-charcoal-900/90 border border-charcoal-700/80 hover:border-hotPink-500/40 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-xl relative transition-all duration-300">
+        
+        <h1 class="text-4xl sm:text-6xl font-black text-gray-100 mb-4 tracking-tight">
+          تحبيني؟
+        </h1>
+        
+        <p class="text-gray-400 text-base sm:text-lg mb-10 leading-relaxed font-medium">
+          جاوب بصراحة
+        </p>
+
+        <!-- Interactive Runaway Area -->
+        <div id="runaway-container" class="relative w-full min-h-[160px] flex items-center justify-center gap-6 sm:gap-8">
+          
+          <!-- YES BUTTON -->
+          <button id="yes-btn" 
+            class="relative z-10 px-8 sm:px-10 py-4 rounded-2xl bg-gradient-to-r from-hotPink-600 to-hotPink-500 hover:from-hotPink-500 hover:to-hotPink-400 text-white font-bold text-lg sm:text-xl shadow-pink-glow hover:shadow-pink-glow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2 cursor-pointer">
+            <i data-lucide="heart" class="w-6 h-6 fill-white"></i>
+            <span>إي / YES</span>
+          </button>
+
+          <!-- RUNAWAY NO BUTTON -->
+          <button id="no-btn" 
+            class="relative z-20 px-8 sm:px-10 py-4 rounded-2xl bg-charcoal-800 hover:bg-charcoal-700 border border-charcoal-600 text-gray-400 hover:text-white font-bold text-lg sm:text-xl transition-all duration-150 select-none flex items-center gap-2 cursor-pointer">
+            <i data-lucide="x" class="w-6 h-6"></i>
+            <span>لا / NO</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         🕹️ STAGE 2: LIE DETECTOR SIMULATION
+         ======================================================================= -->
+    <section id="stage-2" class="scroll-mt-20 hidden transition-all duration-500">
+      <div class="w-full max-w-2xl mx-auto bg-charcoal-900 border border-hotPink-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden">
+        
+        <div class="absolute inset-0 pointer-events-none opacity-20"></div>
+
+        <!-- Terminal Header -->
+        <div class="flex items-center justify-between border-b border-charcoal-700/80 pb-4 mb-6">
+          <div class="flex items-center gap-2">
+            <div class="w-3 h-3 rounded-full bg-red-500"></div>
+            <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+            <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+            <span class="text-xs font-mono text-gray-400 mr-2">DANNY_BIOMETRIC_DETECTOR_v4.exe</span>
+          </div>
+          <span class="text-xs font-mono text-hotPink-400 animate-pulse flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-hotPink-500"></span>
+            LIVE SCANNING
+          </span>
+        </div>
+
+        <!-- Biometric Scan Visuals -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+          <div class="sm:col-span-2 bg-charcoal-950 border border-charcoal-800 rounded-2xl p-4 flex flex-col justify-between">
+            <div class="flex justify-between items-center text-xs font-mono text-gray-400 mb-2">
+              <span>ECG HEART RATE (BPM)</span>
+              <span id="bpm-counter" class="text-hotPink-400 font-bold">148 BPM ⚠️</span>
+            </div>
+            <div class="w-full h-16 flex items-center overflow-hidden">
+              <svg class="w-full h-full stroke-hotPink-500 fill-none stroke-2" viewBox="0 0 300 60">
+                <path id="ecg-path" d="M0,30 L50,30 L60,10 L70,50 L80,20 L90,40 L100,30 L150,30 L160,5 L170,55 L180,15 L190,45 L200,30 L300,30">
+                  <animate attributeName="stroke-dashoffset" from="0" to="300" dur="1.5s" repeatCount="indefinite" />
+                </path>
+              </svg>
+            </div>
+            <div class="text-[10px] font-mono text-gray-500 text-left mt-1">STATUS: SEVERE TACHYCARDIA DETECTED</div>
+          </div>
+
+          <div class="bg-charcoal-950 border border-charcoal-800 rounded-2xl p-4 flex flex-col items-center justify-center relative">
+            <div class="relative w-20 h-20 flex items-center justify-center">
+              <div class="absolute inset-0 rounded-full border border-hotPink-500/20"></div>
+              <div class="absolute inset-2 rounded-full border border-dashed border-hotPink-500/40 animate-spin"></div>
+              <i data-lucide="fingerprint" class="w-10 h-10 text-hotPink-400 animate-pulse"></i>
+            </div>
+            <span class="text-[11px] font-mono text-gray-400 mt-2">DANNY'S BRAIN LINK</span>
+          </div>
+        </div>
+
+        <!-- Scanning Progress Bar & Live Logs -->
+        <div id="detector-scanning-state">
+          <div class="mb-3 flex justify-between text-xs font-mono">
+            <span id="scan-status-text" class="text-gray-300">جاري تحليل النبض والتردد العصبي لداني...</span>
+            <span id="scan-progress-percent" class="text-hotPink-400 font-bold">0%</span>
+          </div>
+          <div class="w-full h-3 bg-charcoal-950 rounded-full overflow-hidden border border-charcoal-700/80 mb-6">
+            <div id="scan-progress-bar" class="h-full bg-gradient-to-r from-hotPink-600 to-hotPink-400 w-0 transition-all duration-300 shadow-pink-glow-sm"></div>
+          </div>
+
+          <div id="terminal-logs" class="bg-charcoal-950 rounded-2xl p-4 font-mono text-xs text-gray-400 space-y-1.5 h-32 overflow-hidden border border-charcoal-800">
+            <div class="text-hotPink-400">> Initiating Danny's neural integrity scan...</div>
+          </div>
+        </div>
+
+        <!-- RESULTS REPORT -->
+        <div id="detector-results" class="hidden space-y-6 pt-4 border-t border-charcoal-800 animate-fade-in">
+          <div class="text-center py-2">
+            <div class="inline-block px-6 py-2 rounded-2xl bg-hotPink-900/40 border-2 border-hotPink-500 text-hotPink-400 font-black text-xl tracking-wider shadow-pink-glow">
+              ✅ فحص معتمد: صـادق 100%
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-charcoal-950/80 border border-charcoal-800 rounded-2xl p-5">
+              <span class="text-xs font-mono text-gray-400 block mb-1">نسبة الصدق (Truth Rate)</span>
+              <div class="text-3xl font-black text-hotPink-400 mb-2">100%</div>
+              <p class="text-xs text-gray-400">
+                السبب التشخيصي: <span class="text-gray-200 font-bold">"لأنه اصلًا ماعندك خيار ثاني"</span>
+              </p>
+            </div>
+
+            <div class="bg-charcoal-950/80 border border-charcoal-800 rounded-2xl p-5">
+              <span class="text-xs font-mono text-gray-400 block mb-1">ملاحظة الجهاز (Detector Note)</span>
+              <div class="text-xl font-bold text-cyberRed mb-2 flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                <span>خوف شديد من elafi</span>
+              </div>
+              <p class="text-xs text-gray-300 font-medium">
+                "دقات قلبه ارتفعت بشكل ملحوظ، واضح إنه ميت خوف من elafi وعواقب الرفض."
+              </p>
+            </div>
+          </div>
+
+          <!-- Proceed Button (Updated to neutral text) -->
+          <div class="text-center pt-2">
+            <button id="goto-stage-3-btn" 
+              class="px-8 py-3.5 rounded-2xl bg-charcoal-800 hover:bg-hotPink-600 border border-hotPink-500/50 hover:border-hotPink-400 text-white font-bold text-base shadow-pink-glow hover:shadow-pink-glow-lg transition-all duration-300 flex items-center gap-2 mx-auto active:scale-95 cursor-pointer">
+              <span>الانتقال للمرحلة التالية</span>
+              <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         🕹️ STAGE 3: CHESS PUZZLE CHALLENGE (3 PUZZLES - 2 MIN TIMER)
+         ======================================================================= -->
+    <section id="stage-3" class="scroll-mt-20 hidden transition-all duration-500">
+      <div class="w-full max-w-4xl mx-auto">
+        
+        <div class="text-center mb-8">
+          <!-- Badge: only puzzle number in parentheses -->
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-charcoal-800 border border-hotPink-500/30 text-hotPink-400 text-xs font-mono mb-3">
+            <span id="chess-level-badge">(اللغز 1 من 3)</span>
+          </div>
+          <h2 id="chess-puzzle-title" class="text-3xl sm:text-4xl font-black text-gray-100 mb-2">
+            لغز كش مات أناستازيا (Anastasia's Mate)
+          </h2>
+
+          <div class="flex items-center justify-center gap-2 mt-4 max-w-xs mx-auto">
+            <div id="puz-dot-1" class="h-2 flex-1 rounded-full bg-hotPink-500 transition-all"></div>
+            <div id="puz-dot-2" class="h-2 flex-1 rounded-full bg-charcoal-800 transition-all"></div>
+            <div id="puz-dot-3" class="h-2 flex-1 rounded-full bg-charcoal-800 transition-all"></div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          
+          <div class="lg:col-span-4 space-y-4">
+            
+            <!-- 2-Minute Penalty Timer Card -->
+            <div class="bg-charcoal-900 border border-charcoal-700/80 rounded-3xl p-6 relative overflow-hidden">
+              <div class="flex justify-between items-center mb-4">
+                <span class="text-xs font-mono text-gray-400 flex items-center gap-1.5">
+                  <i data-lucide="clock" class="w-4 h-4 text-hotPink-400"></i>
+                  عقوبة التأخير (دقيقتين)
+                </span>
+                <span id="timer-status-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-hotPink-900/60 text-hotPink-400 border border-hotPink-500/30">
+                  نشط
+                </span>
+              </div>
+
+              <div class="flex items-center justify-center py-2">
+                <div class="relative w-32 h-32 flex items-center justify-center">
+                  <svg class="w-full h-full transform -rotate-90">
+                    <circle cx="64" cy="64" r="54" stroke="#1f1f2e" stroke-width="8" fill="none" />
+                    <circle id="timer-ring" cx="64" cy="64" r="54" stroke="#ff4d8d" stroke-width="8" fill="none" 
+                      stroke-dasharray="339.29" stroke-dashoffset="0" class="transition-all duration-1000" />
+                  </svg>
+                  <div class="absolute flex flex-col items-center">
+                    <span id="chess-timer" class="text-3xl font-black font-mono text-gray-100">120</span>
+                    <span class="text-[10px] font-mono text-gray-400">ثانية متبقية</span>
+                  </div>
+                </div>
+              </div>
+
+              <p class="text-[11px] font-mono text-gray-400 text-center mt-2">
+                اذا انتهى الوقت بيتم خصم 5000 نقطة منك وتحويلها لي
+              </p>
+            </div>
+
+            <div class="bg-charcoal-900 border border-charcoal-700/80 rounded-3xl p-5 space-y-3">
+              <button id="chess-reset-btn" 
+                class="w-full py-2.5 rounded-xl bg-charcoal-950 hover:bg-charcoal-800 text-gray-400 hover:text-gray-200 text-xs font-mono transition flex items-center justify-center gap-2 cursor-pointer">
+                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                <span>إعادة ضبط الرقعة</span>
+              </button>
+            </div>
+
+          </div>
+
+          <div class="lg:col-span-8 flex flex-col items-center">
+            <div class="relative p-3 sm:p-4 rounded-3xl bg-charcoal-900 border-2 border-charcoal-700/80 shadow-2xl backdrop-blur-md" dir="ltr">
+              <div class="relative">
+                <div id="chessboard" class="grid grid-cols-8 grid-rows-8 w-[320px] h-[320px] sm:w-[440px] sm:h-[440px] rounded-xl overflow-hidden border border-charcoal-700 shadow-inner"></div>
+              </div>
+
+              <div class="flex justify-around text-[10px] font-mono text-gray-500 pt-2 px-2">
+                <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+              </div>
+            </div>
+
+            <div id="chess-feedback" class="h-4 mt-2"></div>
+          </div>
+
+        </div>
+
+        <!-- FULL-SCREEN PENALTY OVERLAY -->
+        <div id="chess-penalty-overlay" class="fixed inset-0 z-[9990] bg-black/95 backdrop-blur-xl hidden flex-col items-center justify-center p-6 text-center animate-fade-in">
+          <div class="w-20 h-20 rounded-full bg-cyberRed/20 border-2 border-cyberRed flex items-center justify-center text-4xl mb-6 animate-bounce">
+            🚨
+          </div>
+          <h3 class="text-3xl sm:text-4xl font-black text-cyberRed mb-3">
+            داني استغرق وقتاً طويلاً!
+          </h3>
+          <p class="text-gray-300 text-lg max-w-lg mb-6 font-medium">
+            جاري خصم نقاط الذكاء من حساب داني وتحويلها تلقائياً إلى رصيد elafi.. 💸
+          </p>
+          
+          <div class="flex items-center gap-4 bg-charcoal-900 border border-charcoal-700 rounded-2xl px-6 py-4 mb-8 font-mono">
+            <div class="text-red-400">
+              <span class="block text-xs text-gray-500">رصيد Danny</span>
+              <span class="text-xl font-bold">-5000 PTS</span>
+            </div>
+            <i data-lucide="arrow-left" class="w-6 h-6 text-hotPink-400 animate-pulse"></i>
+            <div class="text-emerald-400">
+              <span class="block text-xs text-gray-500">رصيد elafi</span>
+              <span class="text-xl font-bold">+5000 PTS</span>
+            </div>
+          </div>
+
+          <button id="penalty-retry-btn" 
+            class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-hotPink-600 to-hotPink-500 hover:from-hotPink-500 hover:to-hotPink-400 text-white font-bold shadow-pink-glow transition active:scale-95 cursor-pointer">
+            اعتراف بعبقرية elafi وإعادة المحاولة 🙇‍♂️
+          </button>
+        </div>
+
+        <!-- REWARD BOX WITH INTERACTIVE 3D GIFT -->
+        <div id="chess-reward-box" class="hidden mt-12 text-center p-8 bg-charcoal-900 border-2 border-hotPink-500 rounded-3xl shadow-pink-glow animate-fade-in">
+          <div class="inline-block px-5 py-2 rounded-full bg-emerald-900/40 border-2 border-emerald-500 text-emerald-400 text-sm font-bold font-mono mb-4">
+            اقسم بالله انك ملك الشطرنج
+          </div>
+
+          <h3 class="text-2xl sm:text-3xl font-black text-gray-100 mb-6">
+            ظهر لك صندوق المكافأة السري! 🎁
+          </h3>
+
+          <!-- مسافة فارغة (ما يقارب 5 سطور فاضية) -->
+          <div class="h-28 sm:h-36" aria-hidden="true"></div>
+
+          <div class="gift-box-wrapper inline-block cursor-pointer" id="interactive-gift-box">
+            <div class="relative w-44 h-44 sm:w-52 sm:h-52 mx-auto flex flex-col items-center justify-center group">
+              <div class="gift-box-burst absolute inset-0 bg-gradient-to-r from-hotPink-500/40 via-yellow-400/40 to-cyan-400/40 rounded-full blur-2xl opacity-0 transition-all duration-700 pointer-events-none"></div>
+
+              <div class="gift-box-lid relative z-20 w-44 sm:w-52 h-12 bg-gradient-to-r from-hotPink-600 via-hotPink-500 to-hotPink-700 rounded-2xl shadow-xl flex items-center justify-center border-2 border-pink-300/40 group-hover:scale-105 transition-transform duration-200">
+                <div class="w-8 h-full bg-yellow-400/90 shadow-md"></div>
+                <div class="absolute -top-4 w-12 h-6 flex items-center justify-center gap-1">
+                  <div class="w-5 h-5 rounded-full border-4 border-yellow-400 -rotate-12 shadow-sm"></div>
+                  <div class="w-5 h-5 rounded-full border-4 border-yellow-400 rotate-12 shadow-sm"></div>
+                </div>
+              </div>
+
+              <div class="relative z-10 w-40 sm:w-48 h-32 bg-gradient-to-b from-charcoal-800 to-charcoal-900 rounded-b-3xl border-2 border-t-0 border-hotPink-500/60 shadow-pink-glow flex items-center justify-center overflow-hidden">
+                <div class="w-8 h-full bg-yellow-400/90 shadow-inner"></div>
+                <span class="absolute text-4xl animate-bounce">🎁</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         📖 STAGE 4: INTERACTIVE MEMORIES BOOK / FLIPBOOK
+         ======================================================================= -->
+    <section id="stage-4" class="scroll-mt-20 hidden transition-all duration-500">
+      <div class="w-full">
+        
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-charcoal-800 border border-hotPink-500/30 text-hotPink-400 text-xs font-mono mb-2">
+            <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+            <span>أرشيف الذكريات غير القابلة للنسيان</span>
+          </div>
+          <h2 class="text-3xl sm:text-5xl font-black text-gray-100 tracking-tight mb-2">
+            احبك واحب كل ذكرى معاك
+          </h2>
+        </div>
+
+        <!-- 3D INTERACTIVE BOOK SPREAD -->
+        <div class="magazine-spread-container w-full max-w-5xl mx-auto mb-8 select-none">
+          <div class="magazine-book relative bg-charcoal-900 border-2 border-charcoal-700 p-4 sm:p-8 min-h-[540px] flex flex-col justify-between overflow-hidden">
+            
+            <!-- Book Spine Center Fold -->
+            <div class="hidden md:block absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-8 book-spine-crease pointer-events-none z-30"></div>
+
+            <!-- Two-Page Interactive Grid: Click left turns forward, click right turns backward! -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-10 relative z-10 items-stretch">
+              
+              <!-- RIGHT PAGE (الصفحة اليمنى: انقر للرجوع للخلف) -->
+              <div id="mag-page-right" 
+                class="book-page-zone bg-charcoal-950/85 border border-charcoal-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-md group relative">
+                <!-- Hover turn indicator -->
+                <div class="absolute top-2 right-3 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-gray-400 bg-black/60 px-2 py-0.5 rounded-full pointer-events-none z-20">
+                  الصفحة السابقة (السابق) ►
+                </div>
+                <div id="mag-page-right-content" class="space-y-4"></div>
+              </div>
+
+              <!-- LEFT PAGE (الصفحة اليسرى: انقر للقلب للأمام) -->
+              <div id="mag-page-left" 
+                class="book-page-zone bg-charcoal-950/85 border border-charcoal-800 rounded-2xl p-4 sm:p-5 flex flex-col justify-between space-y-4 shadow-md group relative">
+                <!-- Hover turn indicator -->
+                <div class="absolute top-2 left-3 opacity-0 group-hover:opacity-100 transition-opacity text-[10px] font-mono text-gray-400 bg-black/60 px-2 py-0.5 rounded-full pointer-events-none z-20">
+                  ◄ اقلب الصفحة (التالي)
+                </div>
+                <div id="mag-page-left-content" class="space-y-4"></div>
+              </div>
+
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="mt-8 pt-4 border-t border-charcoal-800 flex flex-wrap items-center justify-between gap-4 text-xs font-mono">
+              <button id="mag-prev-btn" class="px-5 py-2.5 rounded-xl bg-charcoal-800 hover:bg-hotPink-600 text-white font-bold transition flex items-center gap-2 cursor-pointer active:scale-95">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                <span>الوجه السابق</span>
+              </button>
+
+              <div class="flex items-center gap-2 text-gray-300">
+                <span id="mag-spread-indicator" class="text-hotPink-400 font-bold text-sm">وجه 1 من 37</span>
+                <span class="text-gray-500">|</span>
+                <span id="mag-items-range" class="text-gray-400">العناصر 1 - 4 من 146</span>
+              </div>
+
+              <button id="mag-next-btn" class="px-5 py-2.5 rounded-xl bg-charcoal-800 hover:bg-hotPink-600 text-white font-bold transition flex items-center gap-2 cursor-pointer active:scale-95">
+                <span>الوجه التالي</span>
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Proceed Button -->
+        <div class="text-center mt-8">
+          <button id="goto-stage-5-btn" 
+            class="px-8 py-3.5 rounded-2xl bg-charcoal-800 hover:bg-hotPink-600 border border-hotPink-500/50 hover:border-hotPink-400 text-white font-bold text-base shadow-pink-glow hover:shadow-pink-glow-lg transition-all duration-300 flex items-center gap-2 mx-auto active:scale-95 cursor-pointer">
+            <span>الانتقال للمرحلة التالية</span>
+            <i data-lucide="arrow-down" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- MEMORY LIGHTBOX MODAL -->
+    <div id="memory-modal" class="fixed inset-0 z-[9995] bg-black/95 backdrop-blur-md hidden items-center justify-center p-4">
+      <div class="bg-charcoal-900 border border-charcoal-700 rounded-3xl max-w-2xl w-full p-6 relative max-h-[90vh] overflow-y-auto">
+        <button id="close-modal-btn" class="absolute top-4 left-4 p-2 rounded-full bg-charcoal-800 text-gray-400 hover:text-white cursor-pointer">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+        <div id="modal-content" class="mt-4 text-center"></div>
+      </div>
+    </div>
+
+    <!-- =======================================================================
+         🕹️ STAGE 5: POKEMON PACK OPENING & 3D CARD (po.png)
+         ======================================================================= -->
+    <section id="stage-5" class="scroll-mt-20 hidden transition-all duration-500">
+      <div class="w-full max-w-3xl mx-auto text-center">
+        
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-charcoal-800 border border-hotPink-500/30 text-hotPink-400 text-xs font-mono mb-8">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+          <span>اصدار خاص لحبيبه قلبي</span>
+        </div>
+
+        <div id="pack-wrapper-container" class="flex flex-col items-center justify-center">
+          <div id="booster-pack" 
+            class="group relative w-64 h-96 sm:w-72 sm:h-[420px] rounded-2xl bg-gradient-to-b from-charcoal-800 via-charcoal-900 to-black border-2 border-hotPink-500 shadow-pink-glow hover:shadow-pink-glow-lg transition-all duration-300 transform hover:scale-105 active:scale-95 cursor-pointer flex flex-col justify-between p-6 overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-hotPink-400/20 to-transparent transform -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+
+            <div class="w-full border-b-2 border-dashed border-hotPink-400/60 pb-2 flex justify-between items-center text-[11px] font-mono text-hotPink-400">
+              <span>✂️ اسحب للتمزيق</span>
+              <span class="animate-pulse">TEAR HERE</span>
+            </div>
+
+            <div class="my-auto text-center relative z-10">
+              <div class="w-24 h-24 rounded-2xl bg-charcoal-800/80 border border-hotPink-500/40 flex items-center justify-center mx-auto mb-4 text-4xl shadow-pink-glow">
+                ⚡
+              </div>
+              <h3 class="text-xl font-black text-white font-outfit uppercase tracking-wider">
+                elafi & Danny
+              </h3>
+              <div class="text-xs font-mono text-hotPink-400 font-bold mt-1">
+                TAG TEAM GX BOOSTER
+              </div>
+              <div class="mt-4 px-3 py-1 rounded-full bg-hotPink-900/50 border border-hotPink-500/30 text-[10px] font-mono text-gray-300 inline-block">
+                1 ULTRA RARE CARD GUARANTEED
+              </div>
+            </div>
+
+            <div class="w-full text-center text-[10px] font-mono text-gray-500 border-t border-charcoal-700 pt-2">
+              ★ OFFICIAL COLLECTOR EDITION 2026 ★
+            </div>
+          </div>
+
+          <p class="text-xs font-mono text-hotPink-400 mt-4 animate-pulse">
+            👆 اضغط على البكج لفتحه وتمزيق الغلاف
+          </p>
+        </div>
+
+        <div id="revealed-card-container" class="hidden flex-col items-center justify-center">
+          <div id="custom-pokemon-card" 
+            class="relative w-80 sm:w-96 rounded-3xl p-3 bg-gradient-to-b from-[#181822] via-[#121218] to-[#0c0c10] border-2 border-hotPink-500 shadow-pink-glow-lg overflow-hidden select-none cursor-grab active:cursor-grabbing transition-transform duration-150">
+            <div id="card-holo" class="holo-overlay absolute inset-0 opacity-40 transition-opacity"></div>
+
+            <div id="card-front-face" class="relative z-10 rounded-2xl overflow-hidden border border-charcoal-700/80">
+              <img src="assets/po.png" alt="Pokemon Special Card" class="w-full h-auto object-cover rounded-xl shadow-2xl" onerror="if(this.src.indexOf('assets/')!==-1){this.src='po.png';}">
+            </div>
+          </div>
+
+          <div class="mt-6 text-center">
+            <div class="inline-block px-5 py-2 rounded-2xl bg-charcoal-900 border border-hotPink-500/40 text-hotPink-400 font-black text-sm sm:text-base shadow-pink-glow">
+              ✨ ما بتلاقين كرت اندر من هذا بحياتك ✨
+            </div>
+          </div>
+
+          <!-- Proceed Button -->
+          <div class="mt-8">
+            <button id="goto-stage-6-btn" 
+              class="px-8 py-3.5 rounded-2xl bg-charcoal-800 hover:bg-hotPink-600 border border-hotPink-500/50 hover:border-hotPink-400 text-white font-bold text-base shadow-pink-glow hover:shadow-pink-glow-lg transition-all duration-300 flex items-center gap-2 mx-auto active:scale-95 cursor-pointer">
+              <span>الانتقال للمرحلة التالية</span>
+              <i data-lucide="arrow-down" class="w-4 h-4"></i>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =======================================================================
+         📜 STAGE 6: THE OFFICIAL CONTRACT (تجديد عقد المحبة)
+         ======================================================================= -->
+    <section id="stage-6" class="scroll-mt-20 hidden transition-all duration-500 pb-20">
+      <div class="w-full max-w-3xl mx-auto">
+        
+        <div class="text-center mb-8">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-charcoal-800 border border-hotPink-500/30 text-hotPink-400 text-xs font-mono mb-2">
+            <i data-lucide="file-check" class="w-3.5 h-3.5"></i>
+            <span>وثيقة رسمية صادرة عن محكمة الصداقة العليا</span>
+          </div>
+          <h2 class="text-3xl sm:text-4xl font-black text-gray-100 mb-2">
+            تجديد عقد المحبة
+          </h2>
+          <p class="text-gray-400 text-sm">
+            تم توثيق هذا العقد إلكترونياً ولا يحق للطرف الثاني (Danny) الطعن أو الاستئناف.
+          </p>
+        </div>
+
+        <div id="certificate-printable" 
+          class="relative bg-gradient-to-b from-[#13131c] via-[#0f0f15] to-[#0a0a0e] rounded-3xl p-6 sm:p-10 border-4 border-hotPink-500 shadow-pink-glow-lg text-center relative overflow-hidden">
+          
+          <div class="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none text-9xl font-black font-outfit text-white">
+            elafi & Danny
+          </div>
+
+          <!-- USER ATTACHED CONTRACT IMAGE (assets/contract.jpeg) -->
+          <div class="relative max-w-md mx-auto mb-6 rounded-2xl overflow-hidden border-2 border-hotPink-500/60 shadow-xl group">
+            <img id="contract-document-img" src="assets/contract.jpeg" alt="عقد الصداقة الرسمي" class="w-full h-auto object-cover rounded-xl" onerror="if(this.src.indexOf('assets/')!==-1){this.src='contract.jpeg';}">
+            
+            <div id="contract-signature-overlay" class="absolute bottom-6 right-6 left-6 p-4 rounded-xl bg-charcoal-950/90 border-2 border-emerald-500 text-emerald-400 font-mono text-xs hidden flex-col items-center justify-center animate-fade-in shadow-2xl">
+              <div class="flex items-center gap-2 text-base font-black text-emerald-300">
+                <span>✍️ Danny</span>
+                <span class="text-xs px-2 py-0.5 rounded bg-emerald-900/60 border border-emerald-500 text-emerald-300">مُوقع رسمياً</span>
+              </div>
+              <span class="text-[10px] text-gray-400 mt-1">بصمة إبهام ديجيتال موثقة • غير قابلة للإلغاء 🔒</span>
+            </div>
+          </div>
+
+          <div class="space-y-4 max-w-xl mx-auto text-right text-xs sm:text-sm text-gray-300 font-medium bg-charcoal-950/70 p-6 rounded-2xl border border-charcoal-800 mb-8 leading-relaxed">
+            <p class="flex items-start gap-2">
+              <span class="text-hotPink-400 font-bold">1.</span>
+              <span>يقر الطرف الثاني (Danny) بكامل قواه العقلية بأنه الصديق الدائم لـ elafi، ولا يحق له تقديم استقالة أو إجازة أو الاختفاء.</span>
+            </p>
+            <p class="flex items-start gap-2">
+              <span class="text-hotPink-400 font-bold">2.</span>
+              <span>الرد على رسائل ومكالمات elafi خلال 3 ثوانٍ كحد أقصى، وأي تأخير يعتبر شروعاً في الغدر تُطبق عليه عقوبة سحب البوكيمون.</span>
+            </p>
+            <p class="flex items-start gap-2">
+              <span class="text-hotPink-400 font-bold">3.</span>
+              <span>في حال وجود أي خلاف أو جدال، تعتبر elafi دائماً على حق (حتى لو كانت غلطانة علمياً وتاريخياً).</span>
+            </p>
+            <p class="flex items-start gap-2">
+              <span class="text-hotPink-400 font-bold">4.</span>
+              <span>هذا العقد ساري المفعول إلى الأبد، وغير خاضع للتقادم الزمني أو تغير المزاج.</span>
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-6 max-w-lg mx-auto pt-4 border-t border-charcoal-800 text-center items-center">
+            <div>
+              <span class="text-[11px] font-mono text-gray-400 block mb-1">الطرف الأول (المتحكم وصاحب السيادة)</span>
+              <div class="text-xl font-black text-hotPink-400 font-serif italic py-1">
+                elafi ✍️
+              </div>
+              <span class="text-[10px] font-mono text-emerald-400">● توقيع موثق رسمي</span>
+            </div>
+
+            <div>
+              <span class="text-[11px] font-mono text-gray-400 block mb-1">الطرف الثاني (المستسلم برضاه)</span>
+              <div id="danny-sign-status" class="text-xl font-black text-gray-400 font-serif italic py-1">
+                في انتظار التوقيع...
+              </div>
+              <span id="danny-badge-status" class="text-[10px] font-mono text-cyberGold">● اضغط على زر التوقيع بالأسفل ✍️</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="text-center mt-6">
+          <button id="sign-contract-interactive-btn" 
+            class="px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-base sm:text-lg shadow-lg hover:shadow-emerald-500/40 transition-all duration-300 flex items-center gap-2 mx-auto cursor-pointer active:scale-95 animate-pulse">
+            <i data-lucide="pen-tool" class="w-5 h-5"></i>
+            <span>✍️ اضغط هنا لتوقيع العقد الرسمي والاعتماد الفوري</span>
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 mt-8 no-print">
+          <button id="print-certificate-btn" 
+            class="px-6 py-3 rounded-2xl bg-gradient-to-r from-hotPink-600 to-hotPink-500 hover:from-hotPink-500 hover:to-hotPink-400 text-white font-bold text-sm shadow-pink-glow hover:shadow-pink-glow-lg transition-all flex items-center gap-2 cursor-pointer active:scale-95">
+            <i data-lucide="printer" class="w-4 h-4"></i>
+            <span>حفظ الشهادة / طباعة (Print to PDF)</span>
+          </button>
+
+          <button id="download-cert-img-btn" 
+            class="px-6 py-3 rounded-2xl bg-charcoal-800 hover:bg-charcoal-700 border border-charcoal-600 text-gray-200 font-bold text-sm transition flex items-center gap-2 cursor-pointer active:scale-95">
+            <i data-lucide="download" class="w-4 h-4"></i>
+            <span>تحميل الشهادة كصورة PNG</span>
+          </button>
+        </div>
+
+        <div class="text-center mt-12 text-xs font-mono text-gray-500">
+          صمم بكل حب لك يا داني
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- =========================================================================
+       🚨 FAKE POLICE CALL POP-UP
+       ========================================================================= -->
+  <div id="police-alert-modal" class="fixed inset-0 z-[99999] bg-black/95 backdrop-blur-2xl hidden items-center justify-center p-4">
+    <div class="relative bg-charcoal-900 border-4 border-cyberRed rounded-3xl max-w-lg w-full p-6 sm:p-8 text-center shadow-2xl overflow-hidden animate-wiggle">
+      <div class="flex justify-between items-center mb-6 border-b border-charcoal-800 pb-3">
+        <div class="flex items-center gap-1.5 text-xs font-mono text-cyberRed font-bold animate-pulse">
+          <span>🚨</span>
+          <span>FRIENDSHIP POLICE INTERCEPTOR // 911</span>
+        </div>
+        <span class="text-xs font-mono text-gray-400">CODE RED: ATTEMPTED_ESCAPE</span>
+      </div>
+
+      <div class="w-20 h-20 rounded-full bg-cyberRed/20 border-2 border-cyberRed flex items-center justify-center mx-auto mb-4 text-4xl animate-bounce">
+        🚔
+      </div>
+
+      <h3 class="text-2xl sm:text-3xl font-black text-cyberRed mb-3">
+        إنذار أمني عاجل!
+      </h3>
+
+      <div class="bg-charcoal-950 p-4 rounded-2xl border border-cyberRed/40 mb-6">
+        <p class="text-base sm:text-lg font-bold text-gray-100 leading-relaxed">
+          ⚠️ تحذير: محاولة هروب من هدية elafi وتُعتبر جريمة عقوبتها الحرمان من البوكيمون لمدة أسبوع.
+        </p>
+      </div>
+
+      <div class="bg-charcoal-950/80 rounded-xl p-3 border border-charcoal-800 text-xs font-mono text-gray-400 mb-6 text-right space-y-1">
+        <div>المتهم: <span class="text-white font-bold">Danny (الهارب المطلوب)</span></div>
+        <div>التهمة: <span class="text-cyberRed">محاولة إغلاق صفحة elafi بدون إذن</span></div>
+        <div>الحكم: <span class="text-hotPink-400">البقاء ومتابعة الهدية والاعتراف بالمحبة فوراً</span></div>
+      </div>
+
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <button id="police-surrender-btn" 
+          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 text-white font-bold text-sm shadow-lg transition active:scale-95 cursor-pointer">
+          🙇‍♂️ استسلام فورياً والعودة لـ elafi (أنا نادم)
+        </button>
+
+        <button id="police-escape-btn" 
+          class="w-full sm:w-auto px-6 py-3 rounded-xl bg-charcoal-800 hover:bg-charcoal-700 text-gray-400 text-xs font-mono transition cursor-not-allowed">
+          🏃‍♂️ محاولة الهروب
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT APPLICATION LOGIC -->
+  <script>
+    const AUDIO_CONFIG = {
+      ilyVoice: 'assets/ILY DANNY.mp3',
+      jesusLaughter: 'assets/j.mp3',
+      policeSiren: '',
+    };
+
+    class SoundEngine {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) {
+            this.ctx = new AudioContext();
+          }
+        }
+        if (this.ctx && this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      playClick() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.05);
+          gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.05);
+        } catch(e){}
+      }
+
+      playPageFlip() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(140, this.ctx.currentTime + 0.12);
+          gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.12);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.12);
+        } catch(e){}
+      }
+
+      playScanBeep() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1200 + Math.random() * 800, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.08);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.08);
+        } catch(e){}
+      }
+
+      playHeartbeat() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(80, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(45, this.ctx.currentTime + 0.15);
+          gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.15);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.15);
+        } catch(e){}
+      }
+
+      playTick() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(900, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.03);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.03);
+        } catch(e){}
+      }
+
+      playBuzzer() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+          gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.25);
+        } catch(e){}
+      }
+
+      playDiscordPing() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const notes = [1046.5, 1318.5];
+          notes.forEach((freq, idx) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+            gain.gain.setValueAtTime(0.25, now + idx * 0.08);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now + idx * 0.08);
+            osc.stop(now + idx * 0.08 + 0.35);
+          });
+        } catch(e){}
+      }
+
+      playPoliceSiren(duration = 2.5) {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sawtooth';
+          const now = this.ctx.currentTime;
+          osc.frequency.setValueAtTime(650, now);
+          for (let i = 0; i < duration * 4; i++) {
+            const time = now + i * 0.25;
+            osc.frequency.linearRampToValueAtTime(i % 2 === 0 ? 950 : 650, time + 0.25);
+          }
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + duration);
+        } catch(e){}
+      }
+
+      playJesusLoud() {
+        const paths = ['assets/j.mp3', 'assets/30 oct/j.mp3', 'j.mp3'];
+        let idx = 0;
+        function tryPlay() {
+          if (idx < paths.length) {
+            const audio = new Audio(paths[idx++]);
+            audio.volume = 1.0;
+            audio.play().catch(() => tryPlay());
+          }
+        }
+        tryPlay();
+      }
+
+      playIlyVoice() {
+        const paths = ['assets/ILY DANNY.mp3', 'assets/30 oct/ILY DANNY.mp3', 'ILY DANNY.mp3'];
+        let idx = 0;
+        const self = this;
+        function tryPlay() {
+          if (idx < paths.length) {
+            const audio = new Audio(paths[idx++]);
+            audio.volume = 1.0;
+            audio.play().catch(() => tryPlay());
+          } else {
+            self.playDiscordPing();
+          }
+        }
+        tryPlay();
+      }
+    }
+
+    const sound = new SoundEngine();
+    window.addEventListener('click', () => sound.init(), { once: true });
+    window.addEventListener('touchstart', () => sound.init(), { once: true });
+
+    /* STATIC TWINKLING BACKGROUND STARS ONLY (No moving/flying hearts/stars) */
+    function initBgDecorations() {
+      const container = document.getElementById('bg-decorations');
+      const starSymbols = ['✦', '★', '✨', '•', '⋆'];
+
+      for (let i = 0; i < 50; i++) {
+        const star = document.createElement('div');
+        star.className = 'bg-star';
+        star.textContent = starSymbols[Math.floor(Math.random() * starSymbols.length)];
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.fontSize = `${Math.floor(10 + Math.random() * 14)}px`;
+        star.style.animationDuration = `${Math.floor(1.5 + Math.random() * 3)}s`;
+        star.style.animationDelay = `${(Math.random() * 5).toFixed(1)}s`;
+        container.appendChild(star);
+      }
+    }
+    initBgDecorations();
+
+    /* =========================================================================
+       ✨ RESTORED MAGICAL MOUSE CURSOR TRAIL: GLOWING PINK & GOLD STARS
+       ========================================================================= */
+    const canvas = document.getElementById('cursor-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function drawSparkleStar(ctx, cx, cy, spikes, outerRadius, innerRadius, color, alpha) {
+      let rot = Math.PI / 2 * 3;
+      let x = cx;
+      let y = cy;
+      const step = Math.PI / spikes;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(cx, cy - outerRadius);
+      for (let i = 0; i < spikes; i++) {
+        x = cx + Math.cos(rot) * outerRadius;
+        y = cy + Math.sin(rot) * outerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+        x = cx + Math.cos(rot) * innerRadius;
+        y = cy + Math.sin(rot) * innerRadius;
+        ctx.lineTo(x, y);
+        rot += step;
+      }
+      ctx.lineTo(cx, cy - outerRadius);
+      ctx.closePath();
+      ctx.fillStyle = color;
+      ctx.globalAlpha = Math.max(0, alpha);
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = '#ff4d8d';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    class MouseSparkle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.outerRadius = Math.random() * 6 + 4;
+        this.innerRadius = this.outerRadius / 2;
+        this.spikes = Math.random() > 0.5 ? 4 : 5;
+        this.speedX = (Math.random() - 0.5) * 1.6;
+        this.speedY = (Math.random() - 0.5) * 1.6;
+        this.alpha = 1;
+        this.color = Math.random() > 0.35 ? '#ff4d8d' : '#ffd700';
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.alpha -= 0.03;
+        this.outerRadius = Math.max(0.5, this.outerRadius - 0.1);
+        this.innerRadius = this.outerRadius / 2;
+      }
+      draw() {
+        drawSparkleStar(ctx, this.x, this.y, this.spikes, this.outerRadius, this.innerRadius, this.color, this.alpha);
+      }
+    }
+
+    function handleMouseMoveTrail(e) {
+      const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+      const clientY = e.clientY || (e.touches && e.touches[0].clientY);
+      if (clientX && clientY) {
+        for (let i = 0; i < 3; i++) {
+          particles.push(new MouseSparkle(clientX, clientY));
+        }
+      }
+    }
+    window.addEventListener('mousemove', handleMouseMoveTrail);
+    window.addEventListener('touchmove', handleMouseMoveTrail);
+
+    function animateMouseParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = particles.length - 1; i >= 0; i--) {
+        particles[i].update();
+        particles[i].draw();
+        if (particles[i].alpha <= 0) {
+          particles.splice(i, 1);
+        }
+      }
+      requestAnimationFrame(animateMouseParticles);
+    }
+    animateMouseParticles();
+
+    /* TOP "ILY DANNY" BUTTON */
+    const ilyTopBtn = document.getElementById('ily-top-btn');
+    const ilyCounterBadge = document.getElementById('ily-counter-badge');
+    const ilyToastContainer = document.getElementById('ily-toast-container');
+    let ilyCount = 0;
+
+    ilyTopBtn.addEventListener('click', () => {
+      sound.playIlyVoice();
+      ilyCount++;
+      ilyCounterBadge.textContent = ilyCount;
+
+      confetti({
+        particleCount: 30,
+        spread: 60,
+        origin: { x: 0.9, y: 0.1 },
+        colors: ['#ff4d8d', '#e6005c', '#ffffff']
+      });
+
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-3 rounded-2xl bg-charcoal-900 border border-hotPink-500/60 shadow-pink-glow text-right text-xs font-mono text-gray-200 flex items-center gap-2 transform translate-x-12 opacity-0 transition-all duration-300';
+      toast.innerHTML = `
+        <span class="text-base">💖</span>
+        <div>
+          <span class="text-hotPink-400 font-bold block">elafi: "I LOVE YOU DANNY!"</span>
+          <span class="text-[10px] text-gray-400">(ما في فكّة مني أبداً) [ضغطات: ${ilyCount}]</span>
+        </div>
+      `;
+
+      ilyToastContainer.appendChild(toast);
+      setTimeout(() => toast.classList.remove('translate-x-12', 'opacity-0'), 20);
+      setTimeout(() => {
+        toast.classList.add('translate-x-12', 'opacity-0');
+        setTimeout(() => toast.remove(), 400);
+      }, 3500);
+    });
+
+    /* STAGE 1: RUNAWAY "NO" BUTTON */
+    const noBtn = document.getElementById('no-btn');
+    const yesBtn = document.getElementById('yes-btn');
+    const runawayContainer = document.getElementById('runaway-container');
+    let runawayCount = 0;
+
+    function teleportNoButton() {
+      sound.playClick();
+      runawayCount++;
+
+      if (noBtn.classList.contains('relative')) {
+        noBtn.classList.remove('relative');
+        noBtn.classList.add('absolute');
+      }
+
+      const containerRect = runawayContainer.getBoundingClientRect();
+      const maxX = containerRect.width - noBtn.offsetWidth - 20;
+      const randomX = (Math.random() - 0.5) * (maxX * 1.4);
+      const randomY = (Math.random() - 0.5) * 120;
+
+      noBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+      if (runawayCount > 5) {
+        noBtn.style.transform += ` scale(${Math.max(0.6, 1 - (runawayCount - 5) * 0.08)})`;
+      }
+    }
+
+    noBtn.addEventListener('mouseenter', teleportNoButton);
+    noBtn.addEventListener('mousemove', teleportNoButton);
+    noBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      teleportNoButton();
+    });
+
+    yesBtn.addEventListener('click', () => {
+      sound.playDiscordPing();
+      confetti({
+        particleCount: 70,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#ff4d8d', '#e6005c', '#ffffff']
+      });
+
+      const stage2 = document.getElementById('stage-2');
+      stage2.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('active-stage-indicator').textContent = 'المرحلة: 2 / 6';
+      stage2.scrollIntoView({ behavior: 'smooth' });
+      startLieDetectorScan();
+    });
+
+    /* STAGE 2: LIE DETECTOR SCAN */
+    let scanInterval = null;
+    function startLieDetectorScan() {
+      const progressBar = document.getElementById('scan-progress-bar');
+      const progressPercent = document.getElementById('scan-progress-percent');
+      const statusText = document.getElementById('scan-status-text');
+      const terminalLogs = document.getElementById('terminal-logs');
+      const scanningState = document.getElementById('detector-scanning-state');
+      const resultsState = document.getElementById('detector-results');
+      const bpmCounter = document.getElementById('bpm-counter');
+
+      let progress = 0;
+      const logs = [
+        "> Establishing biometric link with Danny's device...",
+        "> Scanning Danny's brain waves & heart rate...",
+        "> Analyzing pupil dilation and keyboard trembling...",
+        "> Measuring fear of elafi's potential wrath... [CRITICAL]",
+        "> Cross-referencing previous promises & loyalty scores...",
+        "> Validating sincerity of answer 'إي'... 100% MATCH",
+      ];
+      let logIndex = 0;
+
+      const heartbeatTimer = setInterval(() => sound.playHeartbeat(), 550);
+      const beepTimer = setInterval(() => sound.playScanBeep(), 400);
+
+      scanInterval = setInterval(() => {
+        progress += 2;
+        progressBar.style.width = `${progress}%`;
+        progressPercent.textContent = `${progress}%`;
+        bpmCounter.textContent = `${Math.floor(140 + Math.random() * 25)} BPM ⚠️`;
+
+        if (progress % 16 === 0 && logIndex < logs.length) {
+          const logItem = document.createElement('div');
+          logItem.className = 'text-gray-300 font-mono text-[11px]';
+          logItem.textContent = logs[logIndex];
+          terminalLogs.appendChild(logItem);
+          terminalLogs.scrollTop = terminalLogs.scrollHeight;
+          logIndex++;
+        }
+
+        if (progress >= 100) {
+          clearInterval(scanInterval);
+          clearInterval(heartbeatTimer);
+          clearInterval(beepTimer);
+
+          sound.playDiscordPing();
+          statusText.textContent = "اكتمل الفحص البيومتري بنجاح!";
+          setTimeout(() => {
+            scanningState.classList.add('hidden');
+            resultsState.classList.remove('hidden');
+            confetti({ particleCount: 50, spread: 70, colors: ['#ff4d8d', '#22c55e', '#ffffff'] });
+          }, 600);
+        }
+      }, 60);
+    }
+
+    document.getElementById('goto-stage-3-btn').addEventListener('click', () => {
+      sound.playDiscordPing();
+      const stage3 = document.getElementById('stage-3');
+      stage3.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('active-stage-indicator').textContent = 'المرحلة: 3 / 6';
+      stage3.scrollIntoView({ behavior: 'smooth' });
+      initChessGame();
+    });
+
+    /* =========================================================================
+       CHESS PUZZLES (PUZZLE 3: b7 PAWN REMOVED & 120s TIMER)
+       ========================================================================= */
+    const CHESS_PIECES = {
+      'wK': '♔', 'wQ': '♕', 'wR': '♖', 'wB': '♗', 'wN': '♘', 'wP': '♙',
+      'bK': '♚', 'bQ': '♛', 'bR': '♜', 'bB': '♝', 'bN': '♞', 'bP': '♟'
+    };
+
+    const PUZZLE_CONFIGS = [
+      {
+        level: 1,
+        title: "لغز كش مات أناستازيا (Anastasia's Mate)",
+        initial: {
+          'h8': 'bK', 'f8': 'bR', 'g7': 'bP', 'f7': 'bP', 'h7': 'bP',
+          'e7': 'wN', 'h5': 'wQ', 'd3': 'wR', 'g1': 'wK', 'g2': 'wP', 'f2': 'wP', 'h2': 'wP',
+          'c6': 'bN', 'd8': 'bQ', 'a8': 'bR', 'a7': 'bP', 'b7': 'bP', 'c7': 'bP',
+          'a2': 'wP', 'b2': 'wP', 'c2': 'wP'
+        },
+        hint1: "💡 <strong>تلميح elafi:</strong> ضحّ بالوزير الأبيض على <strong>h7</strong>.. ثق بالخطة!",
+        hint2: "💡 <strong>تلميح elafi:</strong> حرك الرخ لـ <strong>h3</strong> وانهي المات بالحصان في e7!",
+      },
+      {
+        level: 2,
+        title: "المات المخنوق الأسطوري (Smothered Mate)",
+        initial: {
+          'h8': 'bK', 'f8': 'bR', 'g7': 'bP', 'h7': 'bP', 'a7': 'bP', 'b7': 'bP', 'c7': 'bP',
+          'g1': 'wK', 'c4': 'wQ', 'g5': 'wN', 'f2': 'wP', 'g2': 'wP', 'h2': 'wP',
+          'a2': 'wP', 'b2': 'wP', 'd1': 'wR'
+        },
+        hint1: "💡 <strong>تلميح elafi:</strong> اعطِ كش بالحصان على <strong>f7</strong> ليتحرك الملك الأسود!",
+        hint2: "💡 <strong>تلميح elafi:</strong> كش مزدوج بالحصان على <strong>h6</strong>!",
+        hint3: "💡 <strong>تلميح elafi:</strong> تضحية الوزير على <strong>g8</strong> ثم خنق الملك بالحصان في <strong>f7</strong>!",
+      },
+      {
+        level: 3,
+        title: "مات دار الأوبرا لبول مورفي (Opera House Mate)",
+        // b7 PAWN REMOVED AS REQUESTED!
+        initial: {
+          'e8': 'bK', 'd7': 'bN', 'd8': 'bR', 'e6': 'bQ', 'a7': 'bP', 'f7': 'bP', 'g7': 'bP', 'h7': 'bP',
+          'g1': 'wK', 'b3': 'wQ', 'd1': 'wR', 'g5': 'wB', 'a2': 'wP', 'b2': 'wP', 'c2': 'wP', 'f2': 'wP', 'g2': 'wP', 'h2': 'wP'
+        },
+        hint1: "💡 <strong>تلميح elafi:</strong> تضحية وزير أسطورية على المربع <strong>b8</strong> لتجبر الحصان على الأكل!",
+        hint2: "💡 <strong>تلميح elafi:</strong> حرك الرخ الأبيض من d1 إلى <strong>d8</strong> كش مات بمساندة الفيل في g5!",
+      }
+    ];
+
+    let currentPuzzleIndex = 0;
+    let chessBoardState = {};
+    let selectedSquare = null;
+    let puzzleStep = 1;
+    let chessTimerSeconds = 120; // 2 MINUTES (120 SECONDS)
+    let chessTimerInterval = null;
+    let puzzleSolved = false;
+
+    function initChessGame() {
+      loadPuzzle(0);
+    }
+
+    function loadPuzzle(index) {
+      currentPuzzleIndex = index;
+      const conf = PUZZLE_CONFIGS[index];
+      chessBoardState = { ...conf.initial };
+      puzzleStep = 1;
+      puzzleSolved = false;
+      selectedSquare = null;
+
+      document.getElementById('chess-level-badge').textContent = `(اللغز ${index + 1} من 3)`;
+      document.getElementById('chess-puzzle-title').textContent = conf.title;
+      const feedback = document.getElementById('chess-feedback');
+      if (feedback) feedback.innerHTML = '';
+
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`puz-dot-${i}`);
+        if (i <= index + 1) {
+          dot.classList.add('bg-hotPink-500');
+          dot.classList.remove('bg-charcoal-800');
+        } else {
+          dot.classList.remove('bg-hotPink-500');
+          dot.classList.add('bg-charcoal-800');
+        }
+      }
+
+      renderChessboard();
+      startChessPenaltyTimer();
+    }
+
+    function renderChessboard() {
+      const boardEl = document.getElementById('chessboard');
+      boardEl.innerHTML = '';
+      const files = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+      const ranks = ['8', '7', '6', '5', '4', '3', '2', '1'];
+
+      ranks.forEach((rank, rIdx) => {
+        files.forEach((file, fIdx) => {
+          const sqId = file + rank;
+          const isLight = (rIdx + fIdx) % 2 === 0;
+          const square = document.createElement('div');
+          square.dataset.square = sqId;
+          
+          square.className = `relative flex items-center justify-center font-bold text-2xl sm:text-3xl select-none transition-colors duration-150 cursor-pointer ${
+            isLight ? 'bg-charcoal-800 hover:bg-charcoal-700' : 'bg-charcoal-950 hover:bg-hotPink-900/30'
+          }`;
+
+          if (selectedSquare === sqId) {
+            square.classList.add('ring-2', 'ring-hotPink-400', 'bg-hotPink-900/40');
+          }
+
+          const piece = chessBoardState[sqId];
+          if (piece) {
+            const isWhite = piece.startsWith('w');
+            const pieceSpan = document.createElement('span');
+            pieceSpan.className = `transform transition-transform duration-200 hover:scale-110 ${
+              isWhite ? 'text-gray-100 drop-shadow-[0_2px_4px_rgba(255,255,255,0.4)]' : 'text-hotPink-400 drop-shadow-[0_2px_4px_rgba(255,77,141,0.6)]'
+            }`;
+            pieceSpan.textContent = CHESS_PIECES[piece];
+            square.appendChild(pieceSpan);
+          }
+
+          square.addEventListener('click', () => handleSquareClick(sqId));
+          boardEl.appendChild(square);
+        });
+      });
+    }
+
+    function handleSquareClick(sqId) {
+      if (puzzleSolved) return;
+      sound.playClick();
+      const feedback = document.getElementById('chess-feedback');
+
+      if (!selectedSquare) {
+        const piece = chessBoardState[sqId];
+        if (piece && piece.startsWith('w')) {
+          selectedSquare = sqId;
+          renderChessboard();
+        }
+        return;
+      }
+
+      if (selectedSquare === sqId) {
+        selectedSquare = null;
+        renderChessboard();
+        return;
+      }
+
+      const from = selectedSquare;
+      const to = sqId;
+
+      if (currentPuzzleIndex === 0) {
+        if (puzzleStep === 1) {
+          if (from === 'h5' && to === 'h7') {
+            sound.playDiscordPing();
+            delete chessBoardState['h5'];
+            chessBoardState['h7'] = 'wQ';
+            selectedSquare = null;
+            puzzleStep = 1.5;
+            renderChessboard();
+
+            setTimeout(() => {
+              delete chessBoardState['h8'];
+              chessBoardState['h7'] = 'bK';
+              puzzleStep = 2;
+              renderChessboard();
+            }, 800);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+        if (puzzleStep === 2) {
+          if (from === 'd3' && to === 'h3') {
+            delete chessBoardState['d3'];
+            chessBoardState['h3'] = 'wR';
+            selectedSquare = null;
+            renderChessboard();
+            onPuzzleVictory(0);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+      }
+
+      if (currentPuzzleIndex === 1) {
+        if (puzzleStep === 1) {
+          if (from === 'g5' && to === 'f7') {
+            sound.playDiscordPing();
+            delete chessBoardState['g5'];
+            chessBoardState['f7'] = 'wN';
+            selectedSquare = null;
+            puzzleStep = 1.5;
+            renderChessboard();
+
+            setTimeout(() => {
+              delete chessBoardState['h8'];
+              chessBoardState['g8'] = 'bK';
+              puzzleStep = 2;
+              renderChessboard();
+            }, 800);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+        if (puzzleStep === 2) {
+          if (from === 'f7' && to === 'h6') {
+            sound.playDiscordPing();
+            delete chessBoardState['f7'];
+            chessBoardState['h6'] = 'wN';
+            selectedSquare = null;
+            puzzleStep = 2.5;
+            renderChessboard();
+
+            setTimeout(() => {
+              delete chessBoardState['g8'];
+              chessBoardState['h8'] = 'bK';
+              puzzleStep = 3;
+              renderChessboard();
+            }, 800);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+        if (puzzleStep === 3) {
+          if (from === 'c4' && to === 'g8') {
+            sound.playDiscordPing();
+            delete chessBoardState['c4'];
+            chessBoardState['g8'] = 'wQ';
+            selectedSquare = null;
+            puzzleStep = 3.5;
+            renderChessboard();
+
+            setTimeout(() => {
+              delete chessBoardState['f8'];
+              chessBoardState['g8'] = 'bR';
+              puzzleStep = 4;
+              renderChessboard();
+            }, 800);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+        if (puzzleStep === 4) {
+          if (from === 'h6' && to === 'f7') {
+            delete chessBoardState['h6'];
+            chessBoardState['f7'] = 'wN';
+            selectedSquare = null;
+            renderChessboard();
+            onPuzzleVictory(1);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+      }
+
+      if (currentPuzzleIndex === 2) {
+        if (puzzleStep === 1) {
+          if (from === 'b3' && to === 'b8') {
+            sound.playDiscordPing();
+            delete chessBoardState['b3'];
+            chessBoardState['b8'] = 'wQ';
+            selectedSquare = null;
+            puzzleStep = 1.5;
+            renderChessboard();
+
+            setTimeout(() => {
+              delete chessBoardState['d7'];
+              chessBoardState['b8'] = 'bN';
+              puzzleStep = 2;
+              renderChessboard();
+            }, 800);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+        if (puzzleStep === 2) {
+          if (from === 'd1' && to === 'd8') {
+            delete chessBoardState['d1'];
+            chessBoardState['d8'] = 'wR';
+            selectedSquare = null;
+            renderChessboard();
+            onPuzzleVictory(2);
+            return;
+          } else {
+            handleWrongMove();
+            return;
+          }
+        }
+      }
+    }
+
+    function handleWrongMove() {
+      sound.playBuzzer();
+      selectedSquare = null;
+      renderChessboard();
+    }
+
+    function onPuzzleVictory(puzIdx) {
+      sound.playDiscordPing();
+
+      confetti({
+        particleCount: 80,
+        spread: 90,
+        colors: ['#ff4d8d', '#f59e0b', '#22c55e']
+      });
+
+      if (puzIdx < 2) {
+        setTimeout(() => {
+          loadPuzzle(puzIdx + 1);
+        }, 1200);
+      } else {
+        puzzleSolved = true;
+        clearInterval(chessTimerInterval);
+        setTimeout(() => {
+          const rewardBox = document.getElementById('chess-reward-box');
+          rewardBox.classList.remove('hidden');
+          rewardBox.scrollIntoView({ behavior: 'smooth' });
+        }, 800);
+      }
+    }
+
+    // 2-MINUTE TIMER (120 SECONDS)
+    function startChessPenaltyTimer() {
+      clearInterval(chessTimerInterval);
+      chessTimerSeconds = 120;
+      const timerDisplay = document.getElementById('chess-timer');
+      const timerRing = document.getElementById('timer-ring');
+      const penaltyOverlay = document.getElementById('chess-penalty-overlay');
+
+      chessTimerInterval = setInterval(() => {
+        if (puzzleSolved) {
+          clearInterval(chessTimerInterval);
+          return;
+        }
+
+        chessTimerSeconds--;
+        timerDisplay.textContent = chessTimerSeconds;
+        sound.playTick();
+
+        const progress = (120 - chessTimerSeconds) / 120;
+        timerRing.style.strokeDashoffset = (339.29 * progress).toString();
+
+        if (chessTimerSeconds <= 15) {
+          timerRing.setAttribute('stroke', '#ff2a5f');
+        } else {
+          timerRing.setAttribute('stroke', '#ff4d8d');
+        }
+
+        if (chessTimerSeconds <= 0) {
+          clearInterval(chessTimerInterval);
+          sound.playPoliceSiren(2.0);
+          penaltyOverlay.classList.remove('hidden');
+          penaltyOverlay.classList.add('flex');
+        }
+      }, 1000);
+    }
+
+    document.getElementById('chess-reset-btn').addEventListener('click', () => {
+      sound.playClick();
+      loadPuzzle(currentPuzzleIndex);
+    });
+
+    document.getElementById('penalty-retry-btn').addEventListener('click', () => {
+      sound.playClick();
+      const penaltyOverlay = document.getElementById('chess-penalty-overlay');
+      penaltyOverlay.classList.add('hidden');
+      penaltyOverlay.classList.remove('flex');
+      loadPuzzle(currentPuzzleIndex);
+    });
+
+    const interactiveGiftBox = document.getElementById('interactive-gift-box');
+    interactiveGiftBox.addEventListener('click', () => {
+      interactiveGiftBox.classList.add('gift-box-opened');
+      sound.playJesusLoud();
+
+      confetti({
+        particleCount: 150,
+        spread: 120,
+        origin: { y: 0.5 },
+        colors: ['#ff4d8d', '#ffd700', '#00e5ff', '#ffffff']
+      });
+
+      setTimeout(() => {
+        const stage4 = document.getElementById('stage-4');
+        stage4.classList.remove('hidden');
+        if (window.lucide) lucide.createIcons();
+        document.getElementById('active-stage-indicator').textContent = 'المرحلة: 4 / 6';
+        initMagazine();
+        stage4.scrollIntoView({ behavior: 'smooth' });
+      }, 900);
+    });
+
+    /* =========================================================================
+       STAGE 4: INTERACTIVE 3D FLIPBOOK MAGAZINE
+       Clicking left page turns forward like turning a book page!
+       Clicking right page turns backward to previous page!
+       Filenames removed! Clean comments permanently fixed under pictures!
+       ========================================================================= */
+    const memoriesList = (typeof MEMORIES_DATA !== 'undefined') ? MEMORIES_DATA : [];
+    let currentSpread = 0;
+    let isFlipping = false;
+
+    function initMagazine() {
+      try {
+        const savedCaptions = JSON.parse(localStorage.getItem('danny_memories_captions') || '{}');
+        memoriesList.forEach(item => {
+          if (savedCaptions[item.name]) {
+            item.caption = savedCaptions[item.name];
+          }
+        });
+      } catch(e){}
+
+      renderSpread();
+    }
+
+    function renderSpread() {
+      const pageRightContent = document.getElementById('mag-page-right-content');
+      const pageLeftContent = document.getElementById('mag-page-left-content');
+      const spreadIndicator = document.getElementById('mag-spread-indicator');
+      const itemsRange = document.getElementById('mag-items-range');
+
+      pageRightContent.innerHTML = '';
+      pageLeftContent.innerHTML = '';
+
+      const totalItems = memoriesList.length;
+      const totalSpreads = Math.max(1, Math.ceil(totalItems / 4));
+
+      if (currentSpread >= totalSpreads) currentSpread = totalSpreads - 1;
+      if (currentSpread < 0) currentSpread = 0;
+
+      const startIndex = currentSpread * 4;
+      const spreadItems = memoriesList.slice(startIndex, startIndex + 4);
+
+      spreadIndicator.textContent = `وجه ${currentSpread + 1} من ${totalSpreads}`;
+      itemsRange.textContent = `العناصر ${startIndex + 1} - ${Math.min(startIndex + 4, totalItems)} من ${totalItems}`;
+
+      const rightItems = spreadItems.slice(0, 2);
+      const leftItems = spreadItems.slice(2, 4);
+
+      function handleMediaError(el, filename, isVideo) {
+        if (!el || el.dataset.retriedCount > 4) return;
+        el.dataset.retriedCount = (parseInt(el.dataset.retriedCount || '0') + 1).toString();
+        
+        const cleanName = filename.replace(/%20/g, ' ');
+        const encName = encodeURIComponent(cleanName);
+        
+        const fallbacks = [
+          `assets/${cleanName}`,
+          `assets/${encName}`,
+          `assets/30 oct/${cleanName}`,
+          `assets/30 oct/${encName}`,
+          `30 oct/${cleanName}`,
+          cleanName
+        ];
+        
+        const curSrc = el.getAttribute('src') || '';
+        for (const next of fallbacks) {
+          if (!curSrc.endsWith(next) && !curSrc.endsWith(encodeURI(next))) {
+            el.src = next;
+            break;
+          }
+        }
+      }
+      window.handleMediaError = handleMediaError;
+
+      function createMediaCard(item) {
+        const card = document.createElement('div');
+        card.className = 'bg-charcoal-900 border border-charcoal-800 rounded-2xl p-3 flex flex-col justify-between group hover:border-hotPink-500/50 transition-all shadow-md';
+
+        let mediaHtml = '';
+        if (item.isVideo) {
+          mediaHtml = `
+            <div class="relative w-full h-44 bg-black rounded-xl overflow-hidden flex items-center justify-center">
+              <video src="${item.src}" controls playsinline preload="metadata" class="w-full h-full object-contain" onerror="handleMediaError(this, '${item.name}', true)"></video>
+            </div>
+          `;
+        } else {
+          mediaHtml = `
+            <div class="relative w-full h-44 bg-charcoal-950 rounded-xl overflow-hidden flex items-center justify-center cursor-pointer" onclick="event.stopPropagation(); openMemoryModal(this.querySelector('img').src, '${encodeURIComponent(item.caption || '')}', false)">
+              <img src="${item.src}" alt="ذكرى" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="handleMediaError(this, '${item.name}', false)">
+              <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/70 text-[10px] font-mono text-gray-300">🔍 تكبير</span>
+            </div>
+          `;
+        }
+
+        const captionText = item.caption ? item.caption : 'اكتب تعليقك هنا...';
+
+        card.innerHTML = `
+          ${mediaHtml}
+          <!-- Permanently Fixed Comment Box directly below picture (No filenames) -->
+          <div class="mt-2.5 p-2.5 rounded-xl bg-charcoal-950 border border-charcoal-800/80 text-xs text-gray-300 cursor-pointer hover:border-hotPink-500/40 transition-colors" onclick="event.stopPropagation(); editCaption('${item.name}')">
+            <div class="flex justify-between items-center mb-1 text-[10px] text-gray-500 font-mono">
+              <span class="flex items-center gap-1 text-hotPink-400">
+                <i data-lucide="message-circle-heart" class="w-3 h-3"></i>
+                <span>التعليق</span>
+              </span>
+              <span class="text-hotPink-400/80 hover:text-hotPink-400">تعديل ✍️</span>
+            </div>
+            <p id="caption-text-${item.id}" class="text-[12px] text-gray-200 leading-snug line-clamp-3">${captionText}</p>
+          </div>
+        `;
+        return card;
+      }
+
+      rightItems.forEach(item => pageRightContent.appendChild(createMediaCard(item)));
+      leftItems.forEach(item => pageLeftContent.appendChild(createMediaCard(item)));
+
+      if (rightItems.length === 0) {
+        pageRightContent.innerHTML = `<div class="text-center py-12 text-gray-500 text-xs">لا توجد صور في هذا الوجه</div>`;
+      }
+      if (leftItems.length === 0) {
+        pageLeftContent.innerHTML = `<div class="text-center py-12 text-gray-500 text-xs">لا توجد صور في هذا الوجه</div>`;
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    // INTERACTIVE BOOK PAGE-TURN (Left page turns forward, Right page turns backward)
+    function flipBookPage(direction) {
+      if (isFlipping) return;
+      const totalSpreads = Math.ceil(memoriesList.length / 4);
+
+      if (direction === 'forward') {
+        if (currentSpread >= totalSpreads - 1) return;
+        isFlipping = true;
+        sound.playPageFlip();
+        const leftPage = document.getElementById('mag-page-left');
+        leftPage.classList.add('anim-flip-forward');
+        setTimeout(() => {
+          currentSpread++;
+          renderSpread();
+          leftPage.classList.remove('anim-flip-forward');
+          isFlipping = false;
+        }, 450);
+      } else {
+        if (currentSpread <= 0) return;
+        isFlipping = true;
+        sound.playPageFlip();
+        const rightPage = document.getElementById('mag-page-right');
+        rightPage.classList.add('anim-flip-backward');
+        setTimeout(() => {
+          currentSpread--;
+          renderSpread();
+          rightPage.classList.remove('anim-flip-backward');
+          isFlipping = false;
+        }, 450);
+      }
+    }
+
+    // Click on Left Page to turn forward like a real book!
+    document.getElementById('mag-page-left').addEventListener('click', (e) => {
+      // If clicking inside interactive media controls, ignore
+      if (e.target.closest('video') || e.target.closest('button')) return;
+      flipBookPage('forward');
+    });
+
+    // Click on Right Page to turn backward like a real book!
+    document.getElementById('mag-page-right').addEventListener('click', (e) => {
+      if (e.target.closest('video') || e.target.closest('button')) return;
+      flipBookPage('backward');
+    });
+
+    // Bottom Navigation Buttons
+    document.getElementById('mag-prev-btn').addEventListener('click', () => flipBookPage('backward'));
+    document.getElementById('mag-next-btn').addEventListener('click', () => flipBookPage('forward'));
+
+    // Edit Caption Helper
+    window.editCaption = function(itemName) {
+      const item = memoriesList.find(m => m.name === itemName);
+      if (!item) return;
+      const newComment = prompt(`اكتبي تعليقكِ على هذه الصورة:`, item.caption || '');
+      if (newComment !== null) {
+        item.caption = newComment.trim();
+        try {
+          const saved = JSON.parse(localStorage.getItem('danny_memories_captions') || '{}');
+          saved[itemName] = item.caption;
+          localStorage.setItem('danny_memories_captions', JSON.stringify(saved));
+        } catch(e){}
+        renderSpread();
+      }
+    };
+
+    // Fullscreen Modal Lightbox
+    window.openMemoryModal = function(src, encodedCap, isVideo) {
+      sound.playClick();
+      const modal = document.getElementById('memory-modal');
+      const content = document.getElementById('modal-content');
+      const cap = decodeURIComponent(encodedCap);
+
+      content.innerHTML = `
+        <div class="mb-4">
+          <img src="${src}" alt="ذكرى" class="max-h-[68vh] w-auto mx-auto rounded-2xl border border-charcoal-700 shadow-2xl">
+        </div>
+        ${cap ? `<p class="text-xs text-gray-200 max-w-md mx-auto leading-relaxed bg-charcoal-950 p-3 rounded-xl border border-charcoal-800">${cap}</p>` : ''}
+      `;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    };
+
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
+      const modal = document.getElementById('memory-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    });
+
+    // Proceed to Stage 5 Button (Neutral label)
+    document.getElementById('goto-stage-5-btn').addEventListener('click', () => {
+      sound.playDiscordPing();
+      const stage5 = document.getElementById('stage-5');
+      stage5.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('active-stage-indicator').textContent = 'المرحلة: 5 / 6';
+      stage5.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    /* =========================================================================
+       STAGE 5: POKEMON PACK OPENING
+       ========================================================================= */
+    const boosterPack = document.getElementById('booster-pack');
+    const packWrapper = document.getElementById('pack-wrapper-container');
+    const revealedCardContainer = document.getElementById('revealed-card-container');
+    const pokemonCard = document.getElementById('custom-pokemon-card');
+    const cardHolo = document.getElementById('card-holo');
+
+    boosterPack.addEventListener('click', () => {
+      sound.playDiscordPing();
+      boosterPack.classList.add('animate-wiggle');
+
+      setTimeout(() => {
+        packWrapper.classList.add('hidden');
+        revealedCardContainer.classList.remove('hidden');
+        revealedCardContainer.classList.add('flex');
+
+        confetti({
+          particleCount: 150,
+          spread: 100,
+          colors: ['#ff4d8d', '#ffd700', '#00ffff']
+        });
+      }, 500);
+    });
+
+    pokemonCard.addEventListener('mousemove', (e) => {
+      const rect = pokemonCard.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -16;
+      const rotateY = ((x - centerX) / centerX) * 16;
+
+      pokemonCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+
+      const holoX = (x / rect.width) * 100;
+      const holoY = (y / rect.height) * 100;
+      cardHolo.style.backgroundPosition = `${holoX}% ${holoY}%`;
+      cardHolo.style.opacity = '0.65';
+    });
+
+    pokemonCard.addEventListener('mouseleave', () => {
+      pokemonCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      cardHolo.style.opacity = '0.4';
+    });
+
+    // Proceed to Stage 6 Button (Neutral label)
+    document.getElementById('goto-stage-6-btn').addEventListener('click', () => {
+      sound.playDiscordPing();
+      const stage6 = document.getElementById('stage-6');
+      stage6.classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
+      document.getElementById('active-stage-indicator').textContent = 'المرحلة: 6 / 6';
+      stage6.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    /* =========================================================================
+       STAGE 6: CONTRACT & INTERACTIVE SIGNATURE
+       ========================================================================= */
+    const signContractInteractiveBtn = document.getElementById('sign-contract-interactive-btn');
+    const contractSignatureOverlay = document.getElementById('contract-signature-overlay');
+    const dannySignStatus = document.getElementById('danny-sign-status');
+    const dannyBadgeStatus = document.getElementById('danny-badge-status');
+
+    signContractInteractiveBtn.addEventListener('click', () => {
+      sound.playDiscordPing();
+      
+      confetti({
+        particleCount: 120,
+        spread: 90,
+        colors: ['#22c55e', '#ff4d8d', '#ffd700']
+      });
+
+      contractSignatureOverlay.classList.remove('hidden');
+      contractSignatureOverlay.classList.add('flex');
+
+      dannySignStatus.innerHTML = `Danny ✍️`;
+      dannySignStatus.className = 'text-xl font-black text-emerald-400 font-serif italic py-1';
+      dannyBadgeStatus.textContent = '● تم التوقيع والاعتماد إلكترونياً ✅';
+      dannyBadgeStatus.className = 'text-[10px] font-mono text-emerald-400';
+
+      signContractInteractiveBtn.innerHTML = `
+        <i data-lucide="check-circle" class="w-5 h-5 text-emerald-300"></i>
+        <span>✅ تم التوقيع والتوثيق بنجاح! لا رجعة فيه 🔒</span>
+      `;
+      signContractInteractiveBtn.classList.remove('animate-pulse');
+      signContractInteractiveBtn.classList.add('bg-charcoal-800', 'border', 'border-emerald-500', 'cursor-default');
+      if (window.lucide) lucide.createIcons();
+    });
+
+    document.getElementById('print-certificate-btn').addEventListener('click', () => {
+      sound.playClick();
+      window.print();
+    });
+
+    document.getElementById('download-cert-img-btn').addEventListener('click', () => {
+      sound.playClick();
+      const certElem = document.getElementById('certificate-printable');
+      
+      const fallbackDownload = () => {
+        const c = document.createElement('canvas');
+        c.width = 1200;
+        c.height = 800;
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#0f0f15';
+        ctx.fillRect(0, 0, 1200, 800);
+        ctx.lineWidth = 8;
+        ctx.strokeStyle = '#ff4d8d';
+        ctx.strokeRect(20, 20, 1160, 760);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 36px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('تجديد عقد المحبة', 600, 150);
+        ctx.fillStyle = '#ff4d8d';
+        ctx.font = 'bold 30px serif';
+        ctx.fillText('elafi ✍️ (الطرف الأول)', 350, 560);
+        ctx.fillStyle = '#22c55e';
+        ctx.fillText('Danny ✍️ (الطرف الثاني - مُوقع)', 850, 560);
+        const link = document.createElement('a');
+        link.download = 'Danny-elafi-Contract.png';
+        link.href = c.toDataURL('image/png');
+        link.click();
+      };
+
+      if (window.html2canvas) {
+        window.html2canvas(certElem, {
+          backgroundColor: '#0a0a0e',
+          scale: 2,
+          useCORS: true,
+          logging: false
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = 'Danny-elafi-Contract.png';
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        }).catch(() => fallbackDownload());
+      } else {
+        fallbackDownload();
+      }
+    });
+
+    /* POLICE ALERT */
+    const policeModal = document.getElementById('police-alert-modal');
+    const policeSurrenderBtn = document.getElementById('police-surrender-btn');
+    const policeEscapeBtn = document.getElementById('police-escape-btn');
+    let hasTriggeredPolice = false;
+
+    document.addEventListener('mouseleave', (e) => {
+      if (e.clientY <= 15 && !hasTriggeredPolice) {
+        triggerPoliceAlert();
+      }
+    });
+
+    function triggerPoliceAlert() {
+      hasTriggeredPolice = true;
+      sound.playPoliceSiren(3.5);
+      policeModal.classList.remove('hidden');
+      policeModal.classList.add('flex');
+    }
+
+    policeSurrenderBtn.addEventListener('click', () => {
+      sound.playDiscordPing();
+      policeModal.classList.add('hidden');
+      policeModal.classList.remove('flex');
+
+      confetti({ particleCount: 50, spread: 70, colors: ['#22c55e', '#ff4d8d'] });
+
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-3 rounded-2xl bg-charcoal-900 border border-emerald-500 text-right text-xs font-mono text-emerald-400 shadow-lg';
+      toast.textContent = "قرار حكيم يا داني! تم تعليق مذكرة الاعتقال والعودة للأمان 💖";
+      ilyToastContainer.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    });
+
+    function runawayPoliceButton() {
+      sound.playClick();
+      const rx = (Math.random() - 0.5) * 160;
+      const ry = (Math.random() - 0.5) * 80;
+      policeEscapeBtn.style.transform = `translate(${rx}px, ${ry}px)`;
+    }
+    policeEscapeBtn.addEventListener('mouseenter', runawayPoliceButton);
+    policeEscapeBtn.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      runawayPoliceButton();
+    });
+
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  </script>
+</body>
+</html>
